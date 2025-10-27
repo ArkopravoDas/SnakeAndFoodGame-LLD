@@ -43,17 +43,22 @@ public class SnakeGame {
         observers.add(observer);
     }
 
-    // Notify observers of score update
-    private void notifyScoreUpdate(int score) {
-        for(GameObserver observer : observers) {
-            observer.onScoreUpdate(score);
+    // Notify observers of move made
+    private void notifyMoveMade(Pair newHead) {
+        for (GameObserver observer : observers) {
+            observer.onMoveMade(newHead);
         }
     }
-
-    // Notify observers of game over
-    private void notifyGameOver() {
+    // Notify observers of food eaten
+    private void notifyFoodEaten(int foodIndex, int newScore) {
         for (GameObserver observer : observers) {
-            observer.onGameOver();
+            observer.onFoodEaten(foodIndex, newScore);
+        }
+    }
+    // Notify observers of game over
+    private void notifyGameOver(int finalScore) {
+        for (GameObserver observer : observers) {
+            observer.onGameOver(finalScore);
         }
     }
 
@@ -78,7 +83,8 @@ public class SnakeGame {
 
         // Game over conditions
         if(crossesBoundary || bitesItself) {
-            notifyGameOver();
+            // Notify observers
+            notifyGameOver(this.snake.size()-1);
             return -1;
         }
 
@@ -88,6 +94,9 @@ public class SnakeGame {
         if(ateFood) {
             // Increment food index to move to next food
             this.foodIndex++;
+            // Notify observers
+            int newScore = this.snake.size();
+            notifyFoodEaten(this.foodIndex - 1, newScore);
         } else {
             // If no food eaten, remove tail
             this.snake.pollLast();
@@ -98,9 +107,11 @@ public class SnakeGame {
         this.snake.addFirst(newHead);
         this.snakeMap.put(newHead, true);
 
+        // Notify observers
+        notifyMoveMade(newHead);
+
         // Calculate ans return score
         int score = this.snake.size() - 1;
-        notifyScoreUpdate(score);
         return score;
     }
 

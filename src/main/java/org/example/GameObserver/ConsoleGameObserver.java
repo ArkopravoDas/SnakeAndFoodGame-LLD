@@ -16,13 +16,8 @@ public class ConsoleGameObserver implements GameObserver {
     }
 
     @Override
-    public void onGameOver() {
-        System.out.println("Game Over!!!");
-    }
-
-    @Override
-    public void onScoreUpdate(int newScore) {
-        System.out.println("Your current score: " + newScore);
+    public void onGameOver(int finalScore) {
+        System.out.println("Game Over! Final score: " + finalScore);
     }
 
 }
