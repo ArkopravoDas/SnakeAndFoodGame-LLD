@@ -1,6 +1,7 @@
 package org.example.Controller;
 
 import org.example.Food.FoodItem;
+import org.example.GameObserver.GameObserver;
 import org.example.Movement.HumanPlayerMovementStrategy;
 import org.example.Movement.MovementStrategy;
 import org.example.UtilityClasses.GameBoard;
@@ -16,6 +17,7 @@ public class SnakeGame {
     private int[][] food;
     private int foodIndex;
     private MovementStrategy movementStrategy;
+    private List<GameObserver> observers;
 
     public SnakeGame(int width, int height, int[][] food) {
         this.board = GameBoard.getInstance(width, height);
@@ -34,6 +36,25 @@ public class SnakeGame {
     // Human or AI
     public void setMovementStrategy(MovementStrategy strategy) {
         this.movementStrategy = strategy;
+    }
+
+    // Add observer for game events
+    public void addObserver(GameObserver observer) {
+        observers.add(observer);
+    }
+
+    // Notify observers of score update
+    private void notifyScoreUpdate(int score) {
+        for(GameObserver observer : observers) {
+            observer.onScoreUpdate(score);
+        }
+    }
+
+    // Notify observers of game over
+    private void notifyGameOver() {
+        for (GameObserver observer : observers) {
+            observer.onGameOver();
+        }
     }
 
     // Returns new score or -1 if game is over
@@ -57,6 +78,7 @@ public class SnakeGame {
 
         // Game over conditions
         if(crossesBoundary || bitesItself) {
+            notifyGameOver();
             return -1;
         }
 
@@ -78,6 +100,7 @@ public class SnakeGame {
 
         // Calculate ans return score
         int score = this.snake.size() - 1;
+        notifyScoreUpdate(score);
         return score;
     }
 
