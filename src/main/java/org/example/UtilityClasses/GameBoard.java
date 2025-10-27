@@ -1,0 +1,29 @@
+package org.example.UtilityClasses;
+
+// Singleton class representing the game board
+public class GameBoard {
+    private static GameBoard instance; // Single instance of the game board
+    private int width;
+    private int height;
+
+    public GameBoard(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    // Method to get the singleton instance of the game board
+    public static GameBoard getInstance(int width, int height) {
+        if(instance == null) {
+            instance = new GameBoard(width, height);
+        }
+        return instance;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+}
